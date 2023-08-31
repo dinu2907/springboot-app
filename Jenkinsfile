@@ -15,10 +15,10 @@ pipeline{
             sh 'mvn clean install'
         }
             }
-    stage('Building image') {
+stage('Building image') {
       steps{
         script {
-         docker.build 131087090100.dkr.ecr.eu-north-1.amazonaws.com/springboot123:latest
+          dockerImage = docker.build registry 
         }
       }
     }
