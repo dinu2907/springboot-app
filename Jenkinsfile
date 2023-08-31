@@ -18,7 +18,7 @@ pipeline{
     stage('Building image') {
       steps{
         script {
-         docker.build  
+         docker.build 131087090100.dkr.ecr.eu-north-1.amazonaws.com/springboot123:latest
         }
       }
     }
