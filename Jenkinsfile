@@ -21,7 +21,7 @@ pipeline {
       steps{
         script {
             def docker = [:]  // Define the docker instance
-      dockerImage = docker.build(registry + ":latest", "-f  .")
+      dockerImage = docker.build(registry + ":latest")
         }
       }
     }
