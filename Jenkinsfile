@@ -19,6 +19,7 @@ stage('Building image') {
       steps{
         script {
           dockerImage = docker.build registry 
+            sh(script: 'whatever', returnStatus: true)
         }
       }
     }
