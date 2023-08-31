@@ -4,7 +4,7 @@ pipeline{
     }
     agent any
      environment{
-        registry = "795590076180.dkr.ecr.ap-south-1.amazonaws.com/ecr123"
+        registry = "public.ecr.aws/g3x4y1t0/springboot"
     }
     stages{
      stage('Cloning Git') {
@@ -26,8 +26,8 @@ pipeline{
     }
      stage('Push into ECR'){
         steps{
-            sh 'aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 795590076180.dkr.ecr.ap-south-1.amazonaws.com'
-            sh 'docker push 795590076180.dkr.ecr.ap-south-1.amazonaws.com/ecr123:latest'
+            sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/g3x4y1t0'
+            sh 'docker push public.ecr.aws/g3x4y1t0/springboot:latest'
         }
     }
     
