@@ -20,7 +20,8 @@ pipeline {
     stage('Building image') {
       steps{
         script {
-          dockerImage = docker.build registry 
+            def docker = [:]  // Define the docker instance
+      dockerImage = docker.build(registry + ":latest", "-f DockerfilePath .")
         }
       }
     }
