@@ -1,7 +1,5 @@
 pipeline{
-      tools {
-        maven "Maven3"
-    }
+
     agent any
      environment{
         registry = "public.ecr.aws/g3x4y1t0/springboot"
