@@ -1,49 +1,45 @@
-pipeline {
+pipeline{
 
     agent any
-    environment {
+     environment{
         registry = "131087090100.dkr.ecr.eu-north-1.amazonaws.com/springboot123"
     }
-   
-    stages {
-        stage('Cloning Git') {
+    stages{
+     stage('Cloning Git') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/akannan1087/springboot-app']]])     
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/dinu2907/springboot-app.git']]])     
             }
+   }
+    stage('Build'){
+        steps{
+            sh 'mvn clean install'
         }
-      stage ('Build') {
-          steps {
-            sh 'mvn clean install'           
             }
-      }
-    // Building Docker images
-    stage('Building image') {
+stage('Building image') {
       steps{
         script {
-            def docker = [:]  // Define the docker instance
-      dockerImage = docker.build(registry + ":latest")
+          dockerImage = docker.build registry 
+            sh(script: 'whatever', returnStatus: true)
         }
       }
     }
-   
-    // Uploading Docker images into AWS ECR
-    stage('Pushing to ECR') {
-     steps{  
-         script {
-                sh 'aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin account_id.dkr.ecr.us-east-2.amazonaws.com'
-                sh 'docker push account_id.dkr.ecr.us-east-2.amazonaws.com/my-docker-repo:latest'
-         }
+     stage('Push into ECR'){
+        steps{
+            sh 'aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 131087090100.dkr.ecr.eu-north-1.amazonaws.com'
+            sh 'docker push 131087090100.dkr.ecr.eu-north-1.amazonaws.com/springboot123:latest'
         }
-      }
+    }
+    
+    stage('K8S Deployment'){
+        steps{
+   withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s', namespace: '', serverUrl: '') {
+    // some block
+    sh "kubectl delete all --all"
+    sh "kubectl apply -f eks-deploy-k8s.yaml"
+    }
+ }
+}
 
-       stage('K8S Deploy') {
-        steps{   
-            script {
-                withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
-                sh ('kubectl apply -f  eks-deploy-k8s.yaml')
-                }
-            }
-        }
-       }
-    }
+ 
+  }
 }
